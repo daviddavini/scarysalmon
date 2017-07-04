@@ -101,7 +101,7 @@ function gameUpdate() {
     player.spd = player.spdPeak;
   }
   //Fish Adding
-  var x = 0.05+(0.015*frameCount/60)/frameRate()
+  var x = 0.025+(0.005*frameCount/60)/frameRate()
   if(Math.random() < (0.5+0.5*Math.sin(2*Math.PI*0.1*frameCount/60))*x){
     addSalmon();
   }
