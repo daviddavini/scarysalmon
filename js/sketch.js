@@ -29,11 +29,25 @@ var salmonSound;
 var goldSound;
 var endSound;
 
+class DeadMusic {
+  constructor() {
+  }
+  play() {
+    return null;
+  }
+}
 function preload() {
-  tunaSound = loadSound('assets/pop.mp3');
-  salmonSound = loadSound('assets/snap.mp3');
-  goldSound = loadSound('assets/ting.mp3');
-  endSound = loadSound('assets/horn.mp3');
+  try {
+    tunaSound = loadSound('assets/pop.mp3');
+    salmonSound = loadSound('assets/snap.mp3');
+    goldSound = loadSound('assets/ting.mp3');
+    endSound = loadSound('assets/horn.mp3');
+  } catch (err) {
+    tunaSound = new DeadMusic();
+    salmonSound = new DeadMusic();
+    goldSound = new DeadMusic();
+    endSound = new DeadMusic();
+  }
 }
 
 function setup(){
