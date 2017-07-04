@@ -37,7 +37,7 @@ function preload() {
 }
 
 function setup(){
-  cnv = createCanvas(screen.width,screen.height-100); //1100,800
+  cnv = createCanvas(window.innerWidth,window.innerHeight); //1100,800
   highScore = int(localStorage.getItem("highscore"));
 
   gameStart();
