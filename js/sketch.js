@@ -132,7 +132,7 @@ function gameUpdate() {
     tuna = tunas[i];
     if(isCollidingPP(tuna.mid().x, tuna.mid().y, player.mid().x, player.mid().y, (player.radius+tuna.radius)/2)) {
       tunas.splice(i,1);
-      score += 10;
+      score += 1;
       player.health = Math.min(1, player.health+0.05);
       bgColor = color(0, 255, 0);
       lastHit = frameCount;
@@ -143,7 +143,7 @@ function gameUpdate() {
     goldfish = goldfishies[i];
     if(isCollidingPP(player.mid().x, player.mid().y, goldfish.mid().x, goldfish.mid().y, (player.radius+goldfish.radius)/2)) {
       goldfishies.splice(i,1);
-      score += 100;
+      score += 12;
       player.health = 1;
       bgColor = color(255, 255, 0);
       lastHit = frameCount;
