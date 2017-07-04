@@ -18,6 +18,7 @@ var scene;
 var lastHit;
 
 var score;
+var highScore;
 var player;
 var salmons;
 var tunas;
@@ -37,6 +38,7 @@ function preload() {
 
 function setup(){
   cnv = createCanvas(1100,800);
+  highScore = int(localStorage.getItem("highscore"));
 
   gameStart();
 
@@ -153,6 +155,10 @@ function gameUpdate() {
   }
   if(player.health <= 0){
     bgColor = color(255, 150, 150);
+    if (highScore == null || highScore<score) {
+      highScore = score;
+      localStorage.setItem("highscore", score);
+    }
     scene = Scene.END;
     endSound.play();
   }
@@ -191,7 +197,7 @@ function draw(){
     rect(10, 10, (width-21)*player.health, 50);
   }
   if (scene !== Scene.START) {
-    fill(0, 130, 0, 70);
+    fill(0, 130, 0, 80);
     textSize(400);
     text(score, width/2, height/2+157)
   }
@@ -199,12 +205,12 @@ function draw(){
   //text("SCORE: ", 90, height-20);
   //textSize(60);
   //text(Math.floor(score), 250, height-13);
-
-  /*textSize(30);
+  fill(0, 130, 0, 160);
+  textSize(30);
   text("HIGH SCORE: ", width-300, height-20);
   textSize(60);
-  text(Math.floor(score), width-100, height-13);
-  */
+  text(Math.floor(highScore), width-100, height-13);
+
   if (scene === Scene.START) {
     player.update();
     fill(250, 10, 10, 200);
@@ -296,7 +302,6 @@ function addGoldfish() {
   var spdPeak = 2.5 + 1*Math.random();
   var goldfish = new Goldfish(pos, dir, radius, moveChance, dragAcc, spdUpAcc, spdDownAcc, spdPeak);
   goldfishies.push(goldfish);
-  console.log(goldfishies);
 }
 
 function keyPressed() {
