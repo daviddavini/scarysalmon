@@ -217,12 +217,12 @@ function draw(){
     textSize(170);
     text("Scary Salmon", width/2, height/2+50);
     textSize(50);
-    text("press enter to start", width/2, height/2+120);
+    text("click to start", width/2, height/2+120);
   }else if (scene === Scene.END) {
     if(frameCount - lastHit > 100) {
       fill(10, 10, 10, 130);
       textSize(50);
-      text("press enter to restart", 250, height-17.5);
+      text("click to restart", 250, height-17.5);
     }
   }
 }
@@ -306,6 +306,13 @@ function addGoldfish() {
 
 function keyPressed() {
   if (keyCode === RETURN) {
+    bgColor = color(200,240,100);
+    scene = Scene.GAME;
+    gameStart();
+  }
+}
+function mouseClicked() {
+  if (scene !== Scene.GAME) {
     bgColor = color(200,240,100);
     scene = Scene.GAME;
     gameStart();
