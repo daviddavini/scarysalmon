@@ -37,7 +37,6 @@ function setup(){
 
   scene = Scene.START;
   bgColor = color(200,240,100);
-  //bgColor = color(60,240,220);
   background(bgColor)
 
   textSize(30);
