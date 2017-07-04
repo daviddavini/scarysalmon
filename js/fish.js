@@ -60,7 +60,7 @@ class Fish {
 
 class Player extends Fish {
   constructor(pos) {
-    super(pos, 0, -0.03, 2, -0.35, 5, color(255, 255, 255, 170), 38)
+    super(pos, 0, -0.03, 3, -0.45, 6, color(255, 255, 255, 170), 42);
     this.touchedMouse = true;
     this.health = 1;
   }
@@ -89,6 +89,7 @@ class Salmon extends Fish {
     } else {
       this.dir += this.dirRange*(2*Math.random()-1);
     }
+    this.dir += this.dirRange*(2*Math.random()-1);
   }
   startMove() {
     var doSo = Math.random() <= this.moveChance;
@@ -110,10 +111,26 @@ class Tuna extends Fish {
   updateDir() {
     if (player.spd>0.1 && isCollidingPP(this.mid().x, this.mid().y, player.mid().x, player.mid().y, 100)) {
       var playerDir = Math.atan2(player.mid().y - this.mid().y, player.mid().x - this.mid().x);
-      this.dir = playerDir + Math.PI + (2*Math.random()-1);
-      this.spdPeak = 2.5;
+      this.dir = playerDir + Math.PI + 0.5*(2*Math.random()-1);
+      this.spdPeak = 1.3;
     } else {
-      this.dir += 1.4*(2*Math.random()-1);
+      this.dir += 0.5*(2*Math.random()-1);
+      this.spdPeak = this.storedSpdPeak;
+    }
+  }
+}
+class Goldfish extends Fish {
+  constructor(pos, dir, radius, moveChance, dragAcc, spdUpAcc, spdDownAcc, spdPeak) {
+    super(pos, dir, dragAcc, spdUpAcc, spdDownAcc, spdPeak, color(255, 255, 170), radius);
+    this.storedSpdPeak = this.spdPeak;
+  }
+  updateDir() {
+    if (player.spd>0.1 && isCollidingPP(this.mid().x, this.mid().y, player.mid().x, player.mid().y, 200)) {
+      var playerDir = Math.atan2(player.mid().y - this.mid().y, player.mid().x - this.mid().x);
+      this.dir = playerDir + Math.PI + 1.2*(2*Math.random()-1);
+      this.spdPeak = 4.5;
+    } else {
+      this.dir += 1.7*(2*Math.random()-1);
       this.spdPeak = this.storedSpdPeak;
     }
   }

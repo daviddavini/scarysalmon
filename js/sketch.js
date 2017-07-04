@@ -21,13 +21,18 @@ var score;
 var player;
 var salmons;
 var tunas;
+var goldfishies;
 
 var tunaSound;
 var salmonSound;
+var goldSound;
+var endSound;
 
 function preload() {
   tunaSound = loadSound('assets/pop.mp3');
   salmonSound = loadSound('assets/snap.mp3');
+  goldSound = loadSound('assets/ting.mp3');
+  endSound = loadSound('assets/horn.mp3');
 }
 
 function setup(){
@@ -49,6 +54,7 @@ function gameStart() {
   player = new Player(createVector(width/2,height/2));
   salmons = [];
   tunas = [];
+  goldfishies = [];
   for(var i = 0; i < 5; i++){
     addTuna();
   }
@@ -69,6 +75,13 @@ function gameUpdate() {
       tunas.splice(i,1);
     }
   }
+  //Goldfish Despawn
+  for(var i = goldfishies.length-1; 0<=i; i--) {
+    goldfish = goldfishies[i];
+    if(goldfish.pos.x>width || goldfish.pos.x<-2*goldfish.radius || goldfish.pos.y>height || goldfish.pos.y<-2*goldfish.radius) {
+      goldfishies.splice(i,1);
+    }
+  }
   //Player Bounce
   if(player.pos.x>width-player.radius){
     player.dir += Math.PI;
@@ -86,12 +99,15 @@ function gameUpdate() {
     player.spd = player.spdPeak;
   }
   //Fish Adding
-  var x = 0.05+(0.02*frameCount/60)/frameRate()
-  if(Math.random() < (0.5+0.5*Math.sin(2*Math.PI*0.25*frameCount/60))*x){
+  var x = 0.05+(0.015*frameCount/60)/frameRate()
+  if(Math.random() < (0.5+0.5*Math.sin(2*Math.PI*0.1*frameCount/60))*x){
     addSalmon();
   }
-  if(Math.random() < 2*x){
+  if(Math.random() < 1.7*x){
     addTuna();
+  }
+  if(Math.random() < 0.1*x){
+    addGoldfish();
   }
   //Collision Detection
   for(var i = salmons.length-1; 0<=i; i--) {
@@ -104,7 +120,7 @@ function gameUpdate() {
       salmon.spd = 0;
       */
       salmons.splice(i,1);
-      player.health = Math.max(0, player.health-0.1);
+      player.health = Math.max(0, player.health-0.15);
       bgColor = color(255, 50, 50);
       lastHit = frameCount;
       salmonSound.play();
@@ -114,11 +130,22 @@ function gameUpdate() {
     tuna = tunas[i];
     if(isCollidingPP(tuna.mid().x, tuna.mid().y, player.mid().x, player.mid().y, (player.radius+tuna.radius)/2)) {
       tunas.splice(i,1);
-      score += 50;
-      player.health = Math.min(1, player.health+0.2);
+      score += 10;
+      player.health = Math.min(1, player.health+0.05);
       bgColor = color(0, 255, 0);
       lastHit = frameCount;
       tunaSound.play();
+    }
+  }
+  for(var i = goldfishies.length-1; 0<=i; i--) {
+    goldfish = goldfishies[i];
+    if(isCollidingPP(player.mid().x, player.mid().y, goldfish.mid().x, goldfish.mid().y, (player.radius+goldfish.radius)/2)) {
+      goldfishies.splice(i,1);
+      score += 100;
+      player.health = 1;
+      bgColor = color(255, 255, 0);
+      lastHit = frameCount;
+      goldSound.play();
     }
   }
   if(frameCount-lastHit > 15){
@@ -127,6 +154,7 @@ function gameUpdate() {
   if(player.health <= 0){
     bgColor = color(255, 150, 150);
     scene = Scene.END;
+    endSound.play();
   }
 
   player.update();
@@ -135,6 +163,9 @@ function gameUpdate() {
   }
   for(var tuna of tunas) {
     tuna.update();
+  }
+  for(var goldfish of goldfishies) {
+    goldfish.update();
   }
 }
 function draw(){
@@ -150,33 +181,42 @@ function draw(){
   for(var tuna of tunas) {
     tuna.show();
   }
+  for(var goldfish of goldfishies) {
+    goldfish.show();
+  }
 
-  fill(255-200*player.health,50+300*player.health,100, 100);
-  rect(10, 10, width*player.health-21, 25);
 
-  fill(0, 130, 0);
-  textSize(30);
-  text("SCORE: ", 90, height-20);
-  textSize(60);
-  text(Math.floor(score), 250, height-13);
-  textSize(30);
+  if (scene !== Scene.END) {
+    fill(255-100*player.health,55+200*player.health,100, 100);
+    rect(10, 10, (width-21)*player.health, 50);
+  }
+  if (scene !== Scene.START) {
+    fill(0, 130, 0, 70);
+    textSize(400);
+    text(score, width/2, height/2+157)
+  }
+  //textSize(30);
+  //text("SCORE: ", 90, height-20);
+  //textSize(60);
+  //text(Math.floor(score), 250, height-13);
+
+  /*textSize(30);
   text("HIGH SCORE: ", width-300, height-20);
   textSize(60);
   text(Math.floor(score), width-100, height-13);
+  */
   if (scene === Scene.START) {
     player.update();
-    fill(250, 10, 10, 170);
+    fill(250, 10, 10, 200);
     textSize(170);
     text("Scary Salmon", width/2, height/2+50);
     textSize(50);
     text("press enter to start", width/2, height/2+120);
   }else if (scene === Scene.END) {
-    if(frameCount - lastHit > 60) {
-      fill(10, 10, 10, 170);
-      textSize(170);
-      text("GAME OVER", width/2, height/2+50);
+    if(frameCount - lastHit > 100) {
+      fill(10, 10, 10, 130);
       textSize(50);
-      text("press enter to restart", width/2, height/2+120);
+      text("press enter to restart", 250, height-17.5);
     }
   }
 }
@@ -226,10 +266,37 @@ function addTuna() {
   }
   var moveChance = 0.2*Math.random()+0.1;
   var dragAcc = -0.02;
-  var spdUpAcc = 3 + 1*Math.random();
+  var spdUpAcc = 0.6+0.4*Math.random();
   var spdDownAcc = -0.3 + -0.2*Math.random();
-  var spdPeak = 1 + 0.5*Math.random();
+  var spdPeak = 0.5 + 0.5*Math.random();
   tunas.push(new Tuna(pos, dir, radius, moveChance, dragAcc, spdUpAcc, spdDownAcc, spdPeak));
+}
+function addGoldfish() {
+  var radius = 30 + 10*Math.random();
+  var pos;
+  var dir;
+  var side = Math.floor(Math.random()*4);
+  if (side === 0){
+    pos = createVector(-2*radius, height*Math.random()-2*radius);
+    dir = 0;
+  } else if (side === 1){
+    pos = createVector(width, height*Math.random()-2*radius);
+    dir = Math.PI;
+  } else if (side === 2){
+    pos = createVector(width*Math.random()-2*radius, -2*radius);
+    dir = 0.5 * Math.PI;
+  } else{
+    pos = createVector(width*Math.random()-2*radius, height);
+    dir = -0.5 * Math.PI;
+  }
+  var moveChance = 0.025*Math.random()+0.075;
+  var dragAcc = -0.02;
+  var spdUpAcc = 4 + 1*Math.random();
+  var spdDownAcc = -0.3 + -0.2*Math.random();
+  var spdPeak = 2.5 + 1*Math.random();
+  var goldfish = new Goldfish(pos, dir, radius, moveChance, dragAcc, spdUpAcc, spdDownAcc, spdPeak);
+  goldfishies.push(goldfish);
+  console.log(goldfishies);
 }
 
 function keyPressed() {
