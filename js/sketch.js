@@ -52,7 +52,11 @@ function preload() {
 
 function setup(){
   cnv = createCanvas(window.innerWidth,window.innerHeight); //1100,800
+  //cnv = createCanvas(1100,800);
   highScore = int(localStorage.getItem("highscore"));
+  if (highScore == null) {
+    highScore = 0;
+  }
 
   gameStart();
 
@@ -221,9 +225,12 @@ function draw(){
   //text(Math.floor(score), 250, height-13);
   fill(0, 130, 0, 160);
   textSize(30);
-  text("HIGH SCORE: ", width-300, height-20);
+  text("HIGH SCORE: ", width-270, height-20);
   textSize(60);
-  text(Math.floor(highScore), width-100, height-13);
+  text(Math.floor(highScore), width-85, height-13);
+
+  textSize(17);
+  text("Created by David Davini", 115, height-20);
 
   if (scene === Scene.START) {
     player.update();
@@ -236,7 +243,7 @@ function draw(){
     if(frameCount - lastHit > 100) {
       fill(10, 10, 10, 130);
       textSize(50);
-      text("click to restart", 250, height-17.5);
+      text("click to restart", width/2-3, height-17.5);
     }
   }
 }
