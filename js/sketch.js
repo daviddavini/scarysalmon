@@ -16,6 +16,7 @@ var Scene = {
 }
 var scene;
 var lastHit;
+var lastStart;
 
 var score;
 var highScore;
@@ -119,8 +120,8 @@ function gameUpdate() {
     player.spd = player.spdPeak;
   }
   //Fish Adding
-  var x = 0.03+(0.01*frameCount/60)/frameRate()
-  if(Math.random() < (0.5+0.5*Math.sin(2*Math.PI*0.1*frameCount/60))*x){
+  var x = 0.03+(0.01*(frameCount-lastStart)/3000)
+  if(Math.random() < (0.5+0.5*Math.sin(2*Math.PI*0.1*(frameCount-lastHit)/60))*x){
     addSalmon();
   }
   if(Math.random() < 1.45*x){
@@ -330,6 +331,7 @@ function keyPressed() {
     bgColor = color(200,240,100);
     scene = Scene.GAME;
     gameStart();
+    lastStart = frameCount;
   }
 }
 function mouseClicked() {
@@ -337,6 +339,7 @@ function mouseClicked() {
     bgColor = color(200,240,100);
     scene = Scene.GAME;
     gameStart();
+    lastStart = frameCount;
   }
 }
 function mouseMoved() {
