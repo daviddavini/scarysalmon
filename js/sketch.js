@@ -119,11 +119,11 @@ function gameUpdate() {
     player.spd = player.spdPeak;
   }
   //Fish Adding
-  var x = 0.025+(0.005*frameCount/60)/frameRate()
+  var x = 0.03+(0.01*frameCount/60)/frameRate()
   if(Math.random() < (0.5+0.5*Math.sin(2*Math.PI*0.1*frameCount/60))*x){
     addSalmon();
   }
-  if(Math.random() < 1.7*x){
+  if(Math.random() < 1.45*x){
     addTuna();
   }
   if(Math.random() < 0.1*x){
@@ -140,7 +140,7 @@ function gameUpdate() {
       salmon.spd = 0;
       */
       salmons.splice(i,1);
-      player.health = Math.max(0, player.health-0.15);
+      player.health = Math.max(0, player.health-0.125);
       bgColor = color(255, 50, 50);
       lastHit = frameCount;
       salmonSound.play();
@@ -151,7 +151,7 @@ function gameUpdate() {
     if(isCollidingPP(tuna.mid().x, tuna.mid().y, player.mid().x, player.mid().y, (player.radius+tuna.radius)/2)) {
       tunas.splice(i,1);
       score += 1;
-      player.health = Math.min(1, player.health+0.05);
+      //player.health = Math.min(1, player.health+0.05);
       bgColor = color(0, 255, 0);
       lastHit = frameCount;
       tunaSound.play();
